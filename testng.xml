@@ -1,0 +1,14 @@
+<suite name="GoRest API Automation Suite">
+
+    <listeners>
+        <listener class-name="com.gorest.api.utilities.ExtentTestListener"/>
+    </listeners>
+
+    <test name="GoRest Tests">
+        <classes>
+            <class name="com.gorest.api.tests.UserCRUDExcelTest"/>
+            <class name="com.gorest.api.tests.UserTest"/>
+        </classes>
+    </test>
+
+</suite>

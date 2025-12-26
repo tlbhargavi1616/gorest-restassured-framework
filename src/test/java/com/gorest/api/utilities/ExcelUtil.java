@@ -1,0 +1,51 @@
+package com.gorest.api.utilities;
+
+import java.io.InputStream;
+
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class ExcelUtil {
+
+    public static Object[][] getExcelData(String filePath, String sheetName) {
+        try {
+            InputStream stream =
+                    ExcelUtil.class.getClassLoader()
+                            .getResourceAsStream(filePath);
+
+            if (stream == null) {
+                throw new RuntimeException("Excel file NOT found: " + filePath);
+            }
+
+            Workbook workbook = new XSSFWorkbook(stream);
+            Sheet sheet = workbook.getSheet(sheetName);
+
+            if (sheet == null) {
+                throw new RuntimeException(
+                        "Sheet NOT found: " + sheetName +
+                        ". Check sheet name in Excel."
+                );
+            }
+
+            int rowCount = sheet.getPhysicalNumberOfRows();
+            int colCount = sheet.getRow(0).getPhysicalNumberOfCells();
+
+            Object[][] data = new Object[rowCount - 1][colCount];
+
+            for (int i = 1; i < rowCount; i++) {
+                Row row = sheet.getRow(i);
+                for (int j = 0; j < colCount; j++) {
+                    Cell cell = row.getCell(j);
+                    data[i - 1][j] =
+                            cell == null ? "" : cell.toString();
+                }
+            }
+
+            workbook.close();
+            return data;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to read Excel data", e);
+        }
+    }
+}
